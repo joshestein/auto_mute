@@ -8,8 +8,13 @@ function get_mute_statuses {
 original_mute_statuses=$(get_mute_statuses)
 
 function toggle_source_mute {
+    # toggle_source_mute [0 | 1] <sources>
+    # 0 = unmute, 1 = mute
+    # if no sources are specified all sources will be queried
+
+    statuses=${2:-$(get_mute_statuses)}
     index=0
-    for i in $mute_statuses; do
+    for i in $statuses; do
         if [ "$i" == "no" ]; then
             pacmd set-source-mute $index $1
         fi
