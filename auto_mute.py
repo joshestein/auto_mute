@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 
+from gi.repository import AppIndicator3, Gtk
 import os
 import signal
 import subprocess
 import gi
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Gtk', '3.0')
-from gi.repository import AppIndicator3, Gtk
 
 
 APP_ID = 'auto_mute_controller'
 SCRIPT = './auto_mute.sh'
 
+
 class TrayIcon():
     def __init__(self):
         self.active = None
         self.pid = None
-        # path = os.path.dirname(os.path.abspath(__file__))
         self.indicator = AppIndicator3.Indicator.new(
-                APP_ID,
-                os.path.abspath("off.png"),
-                AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
+            APP_ID,
+            os.path.abspath("off.png"),
+            AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.indicator.set_menu(self.build_menu())
         self.enable_auto_mute()
