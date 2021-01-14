@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-mute_statuses=$(pactl list sources | grep "Mute: " | cut -d " " -f2)
+function get_mute_statuses {
+    local mute_statuses=$(pactl list sources | grep "Mute: " | cut -d " " -f2)
+    echo "$mute_statuses"
+}
+
+original_mute_statuses=$(get_mute_statuses)
 
 function toggle_source_mute {
     index=0
