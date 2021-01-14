@@ -33,23 +33,21 @@ trap cleanup SIGINT SIGTERM
 
 all_muted=false
 while true; do
-    read -n 1 -t 30
-
-    if [ $? == 0 ]; then
+    timeout 30s xinput test-xi2 --root 3 | grep -A2 --line-buffered RawKeyRelease | \
+    while read line; do
         if [ "$all_muted" = true ]; then
             continue
         else
             toggle_source_mute 1 # mute
             all_muted=true
         fi
-    else
-        # no input for some time, check sources
-        updated_mute_statuses=$(get_mute_statuses)
-        for i in $updated_mute_statuses; do
-            if [ "$i" == "no" ]; then
-                all_muted=false
-                break;
-            fi
-        done
-    fi
+    done
+
+    updated_mute_statuses=$(get_mute_statuses)
+    for i in $updated_mute_statuses; do
+        if [ "$i" == "no" ]; then
+            all_muted=false
+            break;
+        fi
+    done
 done
