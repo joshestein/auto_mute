@@ -31,11 +31,25 @@ function cleanup {
 
 trap cleanup SIGINT SIGTERM
 
-header=0
-stdbuf -o0 showkey -a 2>/dev/null | while read line; do
-    if [[ $header -lt 4 ]]; then
-        header=$((header + 1))
+all_muted=false
+while true; do
+    read -n 1 -t 30
+
+    if [ $? == 0 ]; then
+        if [ "$all_muted" = true ]; then
+            continue
+        else
+            toggle_source_mute 1 # mute
+            all_muted=true
+        fi
     else
-        toggle_source_mute 1 # mute
+        # no input for some time, check sources
+        updated_mute_statuses=$(get_mute_statuses)
+        for i in $updated_mute_statuses; do
+            if [ "$i" == "no" ]; then
+                all_muted=false
+                break;
+            fi
+        done
     fi
 done
