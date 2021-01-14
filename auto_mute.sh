@@ -23,7 +23,10 @@ function toggle_source_mute {
 }
 
 function cleanup {
-    toggle_source_mute 0 # un-mute
+    # un-mute originally unmuted sources
+    printf "\n Cleaning..."
+    toggle_source_mute 0 "$original_mute_statuses"
+    exit 0
 }
 
 trap cleanup SIGINT SIGTERM
